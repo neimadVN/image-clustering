@@ -6,7 +6,7 @@ const {imageHash} = require('image-hash');
 
 
 // Define the directory where your images are located
-const imageDirectory = './NewPicture/my';
+const imageDirectory = './download';
 let i = 1;
 const PADDING = 4;
 const PADDING_TB = 25;
