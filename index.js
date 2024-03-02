@@ -6,10 +6,10 @@ const {imageHash} = require('image-hash');
 
 
 // Define the directory where your images are located
-const imageDirectory = './download';
+const imageDirectory = './download/download4';
 let i = 1;
 const PADDING = 4;
-const PADDING_TB = 25;
+const PADDING_TB = 4;
 
 
 function writeObjectToFile(object, filePath) {
@@ -29,12 +29,12 @@ function writeObjectToFile(object, filePath) {
 // Function to calculate the perceptual hash of an image
 async function calculatePerceptualHash(imagePath) {
   const image = await loadImage(imagePath);
-  const canvas = createCanvas(image.width - PADDING*2 , Math.round(image.width*0.6) - PADDING_TB*2 );
+  const canvas = createCanvas(image.width - PADDING*2 , Math.round(image.width*0.56) - PADDING_TB*2 );
   const ctx = canvas.getContext('2d');
-  ctx.drawImage(image, PADDING, PADDING_TB, image.width - PADDING*2, Math.round(image.width*0.6) - PADDING_TB*2, 0, 0, image.width - PADDING*2, Math.round(image.width*0.6) - PADDING_TB*2);
+  ctx.drawImage(image, PADDING, PADDING_TB, image.width - PADDING*2, Math.round(image.width*0.56) - PADDING_TB*2, 0, 0, image.width - PADDING*2, Math.round(image.width*0.56) - PADDING_TB*2);
 
   return new Promise((resolve, reject) => imageHash({ data: canvas.toBuffer(), name: String(image.width)}, 8, true, (a, b) => a !== null ? reject(a) : resolve(b)));
-  // return encode(ctx.getImageData(0,0,image.width - PADDING*2,Math.round(image.width*0.6)  - PADDING*2).data, image.width - PADDING*2, Math.round(image.width*0.6)  - PADDING*2, 4, 4);
+  // return encode(ctx.getImageData(0,0,image.width - PADDING*2,Math.round(image.width*0.56)  - PADDING*2).data, image.width - PADDING*2, Math.round(image.width*0.56)  - PADDING*2, 4, 4);
 }
 
 // Function to find duplicate images in a directory
