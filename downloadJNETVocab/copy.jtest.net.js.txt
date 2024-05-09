@@ -1,0 +1,101 @@
+function removeAllRT_RP() {
+  // Select all rt elements in the document
+  const rts = document.querySelectorAll('rt');
+  rts.forEach(rt => rt.remove());
+  // Select all rp elements in the document
+  const rps = document.querySelectorAll('rp');
+  rps.forEach(rp => rp.remove());
+}
+
+function trim(str, affix = '') {
+  if (!str) {
+    return '';
+  }
+
+  return str.replace(/^\s+|\s+$/g, '').replace(/\n/g, '').replace(/"/g, '“') + affix;
+}
+function formatBrackets(input) {
+  // Replace all occurrences of ＜ with （
+  let formatted = input.replace(/＜/g, '（');
+  // Replace all occurrences of ＞ with ）
+  formatted = formatted.replace(/＞/g, '）');
+
+  formatted.replace(/"/g, '“');
+  return formatted;
+}
+
+const _sleep = (ms) => new Promise(r => { setTimeout(r, ms) });
+
+function getTableContent() {
+  const table2D = document.querySelectorAll('#vocabularyTable tbody tr');
+  const my2DTable = [];
+
+  table2D.forEach(row => {
+    let [orderNumber, vocap, example] = [...row.children];
+
+    const newRow = [
+      formatBrackets(vocap.querySelector('h5 small.text-danger').textContent),
+      vocap.querySelector('&>small') ? formatBrackets(vocap.querySelector('&>small').textContent) : ' ',
+      `${trim(vocap.querySelector('&>span').textContent, '\n')}${trim(example.querySelector('p').textContent)}`
+    ];
+
+    console.log(newRow)
+
+    my2DTable.push(newRow);
+  })
+
+  return my2DTable;
+}
+
+
+function copyArrayToClipboard(array) {
+  const tsvString = array.map(row =>
+    row.map(cell => {
+      if (typeof cell !== 'string') {
+        return cell;
+      }
+
+      return '"' + cell.replace(/\n/g, '\n') + '"';
+    }
+    ).join('\t')
+  ).join('\n');
+  console.log('🚀 ~ copyArrayToClipboard ~ tsvString:', tsvString)
+
+  navigator.clipboard.writeText(tsvString)
+    .then(() => console.log('Content copied to clipboard successfully!'))
+    .catch(err => console.error('Failed to copy content to clipboard: ', err));
+}
+
+function makeButton() {
+  const oldButton = document.querySelector("#SS_VN_2024_AUTO_SCRIPT_MEOWY");
+  if (oldButton) {
+    oldButton.remove();
+  }
+
+  const button = document.createElement("button");
+  button.id = "SS_VN_2024_AUTO_SCRIPT_MEOWY"; // Set the button text
+  button.innerHTML = "Click Me! Little Meow!"; // Set the button text
+  button.style.position = "fixed";
+  button.style.bottom = "20px";
+  button.style.right = "20px";
+  button.style.padding = "10px 20px";
+  button.style.backgroundColor = "#ff6347";
+  button.style.color = "white";
+  button.style.border = "none";
+  button.style.borderRadius = "5px";
+  button.style.cursor = "pointer";
+  button.style.zIndex = "1000";
+
+  document.body.appendChild(button);
+
+  button.addEventListener("click", function () {
+    removeAllRT_RP();
+    const my2DTable = getTableContent();
+    // await _sleep(3000);
+    copyArrayToClipboard(my2DTable);
+  });
+}
+
+(async () => {
+  makeButton();
+})();
