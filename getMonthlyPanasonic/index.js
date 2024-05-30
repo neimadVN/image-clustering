@@ -4,9 +4,13 @@ const fs = require('fs');
 const { makeCSV } = require('../utils/csvFile');
 
 const MAIN_URL = 
-  'https://www2.panasonic.biz/jp/catalog/lighting/products/search/shinshouhin/result.php?at=shinshouhin&ct=zentai&st=shouhin&vt=new&hatsubai_date=2024-02-01&kigustyle=%E9%AB%98%E5%A4%A9%E4%BA%95%E7%94%A8%E3%83%80%E3%82%A6%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%88&kougen=LED'
+  process.env.LINK
   + '&view_list=12000';
 const BATCHSIZE = 50;
+
+if (!process.env.LINK) {
+  throw 'Error: no link!'
+}
 
 const crawlMainURL = async (MAIN_URL = MAIN_URL) => {
   const { data } = await axios.get(MAIN_URL);
