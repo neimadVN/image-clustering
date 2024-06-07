@@ -66,6 +66,7 @@ const crawlUrl = async ({ url, price }) => {
   let BDetail = '';
   let CCode = '';
   let DPrice = '';
+  let ENote = '';
   let isSeparatedSold = NaN;
 
   try {
@@ -93,11 +94,19 @@ const crawlUrl = async ({ url, price }) => {
     }
     // <!> process B detail
 
+    $('div.products#content div.info dl.clr dt').each((index, element) => {
+      let text = $(element).text().trim();
+      if (text.includes('◆受注品')) {
+        ENote = '受注品';
+      }
+    });
+
     return {
       ATitle,
       BDetail,
       CCode,
       DPrice,
+      ENote,
     };
   } catch (error) {
     return {
@@ -105,6 +114,7 @@ const crawlUrl = async ({ url, price }) => {
       BDetail: url,
       CCode,
       DPrice,
+      ENote,
     }
   }
 };
@@ -132,7 +142,8 @@ const processBatch = async (batch) => {
     タイトル: 'ATitle',
     説明: 'BDetail',
     品物番号: 'CCode',
-    定価: 'DPrice'
+    定価: 'DPrice',
+    note: 'ENote',
   })
 
   fs.writeFile(`${__dirname}/${titleOfCategory}.csv`, resultCSVStr, (err) => {
